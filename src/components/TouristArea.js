@@ -53,9 +53,7 @@ const clickCandidate = (e) => {
     // setRegist(result);
   };
 
-  // if (hotel.length === 0) {
-  //   return <div>検索情報がありません</div>;
-  // }
+
 
   return (
     <TableContainer component={Paper} sx={{ width: "80%" }}>

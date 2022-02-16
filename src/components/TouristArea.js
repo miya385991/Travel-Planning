@@ -32,25 +32,13 @@ const clickCandidate = (e) => {
   // setCandidate([...candidate, candidateTable]);
     console.log(candidate);
 
-    // // 重複処理
-    // const result = list.filter((item, index, array) => {
-    //   return array.indexOf(item) === index;
-    // });
-    // setCandidate(result);
   };
 
   const clickRegist = (e) => {
     const index = e.target.value;
 
     console.log(index);
-    // const registHotel = hotel[index];
-    // const list = [...regist, registHotel];
 
-    // // 重複処理
-    // const result = list.filter((item, index, array) => {
-    //   return array.indexOf(item) === index;
-    // });
-    // setRegist(result);
   };
 
 

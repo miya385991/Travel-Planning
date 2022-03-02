@@ -54,9 +54,9 @@ const s = {
 };
 
 const Profile = () => {
-  const { app } = useContext(AppContext);
+  const { app ,imageRef} = useContext(AppContext);
   const firebaseApp = getApp();
-  const storage = getStorage(firebaseApp, "gs://jub-hunting-work.appspot.com");
+  const storage = getStorage(firebaseApp);
 
   const [preview, setPreview] = useState("");
   const [image, setImage] = useState("");
@@ -71,7 +71,7 @@ const Profile = () => {
     const mountainsRef = ref(storage, image);
     const mountainImagesRef = ref(storage, image);
     uploadBytes(mountainsRef, preview).then((snapshot) => {
-      console.log(snapshot);
+      // console.log(snapshot);
     });
   };
 

@@ -10,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import { logRoles } from '@testing-library/react';
 
 
 
@@ -17,46 +18,52 @@ import Button from "@mui/material/Button";
 const TableList = () => {
 
   const { hotel, candidate, setCandidate, regist, setRegist } = useContext(AppContext);
-  
-
-
-
+  const [hotelTable, setHotelTable] = useState([]);
 
   //候補ボタン処理
   const clickCandidate = (e) => {
     const index = e.target.value;
-    const candidateHotel = hotel[index]
-    const list = [...candidate, candidateHotel];
+    const candidateHotel = hotel[index];
+      setHotelTable({
+        ...hotelTable,
+        id: candidate.length + 1,
+        name: candidateHotel.hotel[0].hotelBasicInfo.hotelName,
+        address: candidateHotel.hotel[0].hotelBasicInfo.address2,
+        lat: candidateHotel.hotel[0].hotelBasicInfo.latitude,
+        lng: candidateHotel.hotel[0].hotelBasicInfo.longitude,
+      });
+      setCandidate([...regist, hotelTable]);
 
-    // 重複処理
-    const result = list.filter((item, index, array) => {
-      return array.indexOf(item) === index
-    }
-    );
-    setCandidate(result);
+
   }
 
-  const clickRegist = (e) => {
-    const index = e.target.value;
-    const registHotel = hotel[index];
-    const list = [...regist, registHotel];
-      
-      
-    // 重複処理
-    const result = list.filter((item, index, array) => {
-      return array.indexOf(item) === index
-    })
-      
-    setRegist(result)
-  };
 
+    const clickRegist = (e) => {
+      const index = e.target.value
+      const registHotel = hotel[index];
+
+
+      setHotelTable({
+        ...hotelTable,
+        id : regist.length + 1,
+        name:registHotel.hotel[0].hotelBasicInfo.hotelName,
+        address:registHotel.hotel[0].hotelBasicInfo.address2,
+        lat:registHotel.hotel[0].hotelBasicInfo.latitude,
+        lng:registHotel.hotel[0].hotelBasicInfo.longitude
+      })
+      setRegist([...regist, hotelTable]);
+    };
   
+  
+
+
+
 
   
     if (hotel.length === 0) {
         return (
-          <div >
-            検索情報がありません
+          <div style={ { textAlign:'center',width:'100%'}}>
+          都道府県と目的を選択してください
           </div>
         );
     }

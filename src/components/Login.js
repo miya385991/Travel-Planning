@@ -7,9 +7,13 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import { useCookies } from "react-cookie";
 
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { addDoc, collection} from "firebase/firestore";
+
+import { AppContext } from "./context/AppContext";
 
 
 const s = {
@@ -22,25 +26,42 @@ const s = {
 };
 
 const Login = () => {
-
+  const [cookies, setCookie] = useCookies(["uid"]);
+  const { db } = useContext(AppContext);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
   const authUser = async () => { 
     const auth = getAuth();
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password)
       const user = await res.user;
-      console.log(user);
-      navigate("/map");
+      if (user) {
+        const uid = user.uid;
+        setCookie("uid", uid);
+        await addDoc(collection(db, "user"), {
+          uid,
+          name ,
+          mail: email,
+          password,
+          img:''
+            });
+        navigate("/map");
+      }
+
     } catch (error) {
       console.log(error.code)
       console.log(error.message);
     }
   }
 
+
+
   return (
-    <div style={s.root}>
+    <div style={ s.root }>
+
       <Card sx={{ width: "50%", height: "50vh", margin: "auto" }}>
         <h1>新規作成</h1>
         <CardContent>
@@ -52,15 +73,24 @@ const Login = () => {
             noValidat
             autoComplete="off"
           >
-
+            <div style={s.textField}>
+              <TextField
+                sx={{ width: "80%" }}
+                id="standard-basic"
+                label="ユーザー名"
+                variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
             <div style={s.textField}>
               <TextField
                 sx={{ width: "80%" }}
                 id="filled-basic"
                 label="メールアドレス"
                 variant="outlined"
-                value={ email }
-                onChange={ e => setEmail(e.target.value) }
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div style={s.textField}>
@@ -71,22 +101,20 @@ const Login = () => {
                 variant="outlined"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+                />
+            </div>{" "}
           </Box>
         </CardContent>
         <CardActions
           sx={{ width: "50%", margin: "auto", paddingBottom: "1rem" }}
-        >
-
-            <Button variant="contained" sx={{ width: "100%" }} onClick={authUser}>
-              登録
-            </Button>
-   
+          >
+          <Button variant="contained" sx={{ width: "100%" }} onClick={authUser}>
+            登録
+          </Button>
         </CardActions>
         <CardActions
           sx={{ width: "50%", margin: "auto", paddingBottom: "1rem" }}
-        >
+          >
           <Link to="/signin" style={{ width: "100%" }}>
             サインインはこちら
           </Link>

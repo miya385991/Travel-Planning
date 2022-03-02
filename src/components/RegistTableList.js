@@ -10,7 +10,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 const RegistTableList = () => {
-  const { regist } = useContext(AppContext);
+  const { regist, duplicateCheck } = useContext(AppContext);
+
+  // 重複処理
+  const result = duplicateCheck(regist);
+
 
   return (
     <TableContainer
@@ -20,17 +24,19 @@ const RegistTableList = () => {
       <Table sx={{ width: "100%" }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell component="th" scope="row" sx={{ color: "#fff",fontWeight:800 }}>
+            <TableCell
+              component="th"
+              scope="row"
+              sx={{ color: "#fff", fontWeight: 800 }}
+            >
               予定リスト{`　`} 1月22日〜1月24日
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {regist.map((hotels) => (
-            <TableRow key={hotels.hotel[0].hotelBasicInfo.hotelNo}>
-              <TableCell sx={{ color: "#fff" }}>
-                {hotels.hotel[0].hotelBasicInfo.hotelName}
-              </TableCell>
+          {result.map((schedule, index) => (
+            <TableRow key={index}>
+              <TableCell sx={{ color: "#fff" }}>{schedule.name}</TableCell>
             </TableRow>
           ))}
         </TableBody>

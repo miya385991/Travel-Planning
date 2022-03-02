@@ -15,23 +15,23 @@ import Paper from "@mui/material/Paper";
 
 
 const Candidate = () => {
-
-  const { candidate} = useContext(AppContext);
+  
+  const { candidate, duplicateCheck } = useContext(AppContext);
+  // 重複処理
+  const result = duplicateCheck(candidate);
 
   return (
     <TableContainer component={Paper} sx={{ width: "20%", height: "50vh" }}>
       <Table sx={{ width: "100%" }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell >候補リスト</TableCell>
+            <TableCell>候補リスト</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {candidate.map((hotels) => (
-            <TableRow key={hotels.hotel[0].hotelBasicInfo.hotelNo}>
-              <TableCell >
-                {hotels.hotel[0].hotelBasicInfo.hotelName}
-              </TableCell>
+          {result.map((can) => (
+            <TableRow key={can.id}>
+              <TableCell>{can.name}</TableCell>
             </TableRow>
           ))}
         </TableBody>

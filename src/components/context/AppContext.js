@@ -16,9 +16,18 @@ import {
   Toge,
 } from "../../api";
 
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApp } from "firebase/app";
   import {getAuth,onAuthStateChanged} from 'firebase/auth'
-  import {  getFirestore,collection,getDocs } from "firebase/firestore";
+  import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    query,
+    where,
+  } from "firebase/firestore";
+  import { getStorage, ref } from "firebase/storage";
+
 
 
  export const AppContext = createContext();
@@ -41,7 +50,15 @@ const AppContextProvider = ({ children }) => {
   const [spot, setSpot] = useState("");
   const [selectPref, setSelectPref] = useState("");
 
+  const [user, setUser] = useState([]);
 
+  // プロジェクト作成メンバー
+  const [member, setMember] = useState([]);
+
+  // 重複処理
+  const duplicateCheck = (dup) => {
+    return dup.filter((item, index, array) => array.indexOf(item) === index);
+  };
 
   const firebaseConfig = {
     apiKey: "AIzaSyAV0ZlS7GGm7APs0Sm5aNt1rx7cf3vt9MM",
@@ -51,15 +68,46 @@ const AppContextProvider = ({ children }) => {
     messagingSenderId: "332638597332",
     appId: "1:332638597332:web:057067b0b3b71b46eccb41",
     measurementId: "G-4YKWCQ8LJK",
+    storageBucket: "gs://jub-hunting-work.appspot.com",
   };
   const app = initializeApp(firebaseConfig);
-  const auth =getAuth(app)
-  onAuthStateChanged(auth, user => {
-  console.log(user);
-})
+
   const db = getFirestore(app);
+  const storage = getStorage(app);
+  // console.log(storage);
+  // DBからデータ取得
+  async function getDB(db, dbname) {
+    const dbCol = collection(db, dbname);
+    const dbSnapshot = await getDocs(dbCol);
+    const dbList = await dbSnapshot.docs.map((doc) => doc.data());
+    setUser(dbList);
+    return;
+  }
 
 
+
+  // 複数検索
+  const getData = async (dbname, qy, keyword) => {
+    const q = query(collection(db, dbname ), where(qy, "==", keyword));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      setMember([...member, doc.id]);
+    });
+  };
+
+    const userDB = async (dbname,id) => {
+      const q = query(collection(db, dbname));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+
+        console.log(doc.data());
+
+        
+      });
+    };
+
+
+  // 観光場所データ
   const sightseeing = () => {
     const list = [];
     Damu.map((item) => list.push(item));
@@ -92,11 +140,11 @@ const AppContextProvider = ({ children }) => {
 
     return list;
   };
-
   // 楽天レストランAPI
 
   // 緯度経度を取得
   const onSubmitMap = async (data) => {
+    data = spot === "hotel" ? data + "駅" : data;
     try {
       const res = await axios.get(`${process.env.REACT_APP_GEOCODE_ENDPOINT}`, {
         params: {
@@ -156,6 +204,15 @@ const AppContextProvider = ({ children }) => {
         setSpot,
         selectPref,
         setSelectPref,
+        duplicateCheck,
+        member,
+        setMember,
+        db,
+        getDB,
+        getData,
+        user,
+        storage,
+        userDB,
       }}
     >
       {children}
@@ -164,4 +221,3 @@ const AppContextProvider = ({ children }) => {
 };
  
  export default AppContextProvider;
- 

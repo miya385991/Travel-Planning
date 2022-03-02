@@ -7,7 +7,7 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-
+import { useCookies } from "react-cookie";
 
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -25,16 +25,17 @@ const Signin = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [cookies, setCookie] = useCookies(["uid"]);
   const navigate = useNavigate();
 
     const signInUser = async () => {
-      console.log('aaa');
       const auth = getAuth();
       try {
         const res = await signInWithEmailAndPassword(auth, email, password);
         const user = await res.user;
         if (user) {
           const uid = user.uid;
+          setCookie("uid", uid);
           navigate("/map");
         }
 
@@ -43,7 +44,6 @@ const Signin = () => {
         console.log(error.message);
       }
     };
-  
 
   return (
     <div style={s.root}>

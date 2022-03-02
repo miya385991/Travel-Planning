@@ -73,9 +73,12 @@ const SearchBarGeoCode = () => {
     useContext(AppContext);
 
   const clickHandler = () => {
+    if (spot === "" || selectPref === "") {
+      return alert("検索項目をを入力してください");
+    }
     onSubmitMap(selectPref);
     
-  };
+  }
 
 
   return (

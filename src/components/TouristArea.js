@@ -27,18 +27,18 @@ const data = searchSpot(selectPref);
 //候補ボタン処理
 const clickCandidate = (e) => {
     const index = e.target.value;
-    const candidateTable = data[index];
-    candidate.push(candidateTable);
-  // setCandidate([...candidate, candidateTable]);
-    console.log(candidate);
-
+  const candidateTable = data[index];
+  candidateTable.id= candidate.length;
+  delete candidateTable.type;
+  setCandidate([...candidate, candidateTable]);
   };
 
   const clickRegist = (e) => {
     const index = e.target.value;
-
-    console.log(index);
-
+    const registTable = data[index];
+    registTable.id = regist.length;
+    delete registTable.type;
+    setRegist([...regist, registTable]);
   };
 
 

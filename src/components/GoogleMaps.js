@@ -8,10 +8,12 @@ import {
 import { AppContext } from "./context/AppContext";
 
 import SearchBarGeoCode from "./SearchBarGeoCode";
-import HotelTableList from "./HotelTableList";
 import CandidateTableList from "./CandidateTableList";
 import RegistTableList from "./RegistTableList";
-import TouristArea from "./TouristArea";
+import Tables  from "./Tables";
+
+import { doc, getDoc } from "firebase/firestore";
+
 
 
 
@@ -34,11 +36,22 @@ const s = {
 };
 
 const GoogleMaps = () => {
-  const { lat, lng, hotel, searchSpot, selectPref } = useContext(AppContext);
+  const { lat, lng, hotel, searchSpot, selectPref,db } = useContext(AppContext);
    const data = searchSpot(selectPref);
   const center = { lat, lng };
 
+  const onMapClick = async (e) => {
+    const docRef = doc(db, "user", "23D3CzjckFgVg0glQ6Gi");
+    const docSnap = await getDoc(docRef);
 
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }
+  // onMapClick();             
 
 
   return (
@@ -55,7 +68,7 @@ const GoogleMaps = () => {
 
 
 {/* マーカー処理 */}
-              { data.map(spots => {
+              {/* { data.map(spots => {
                 return (
                   
                   <Marker
@@ -65,7 +78,7 @@ const GoogleMaps = () => {
                   cursor={spots.name}
                   />
                   );
-                }) }
+                }) } */}
 
               
             {/* {hotel.map((hotels) => {
@@ -77,15 +90,14 @@ const GoogleMaps = () => {
                     lng: hotels.hotel[0].hotelBasicInfo.longitude,
                   }}
                 />
-              );
-            })} */}
+              ); */}
+            {/* })} */}
           </GoogleMap>
         </LoadScript>
         <SearchBarGeoCode />
 
-        <div style={s.contents}>
-          {/* <HotelTableList /> */}
-          <TouristArea />
+        <div style={ s.contents }>
+          <Tables />
           <CandidateTableList />
         </div>
       </div>
